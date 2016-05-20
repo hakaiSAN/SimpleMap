@@ -10,7 +10,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.view.MotionEvent;
+
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -44,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements
     };
     private final static int REQCODE_PERMISSIONS = 1111;
 
+    private Button now_location;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,10 +71,15 @@ public class MainActivity extends AppCompatActivity implements
                 .addApi(LocationServices.API)
                 .build();
 
+        now_location = (Button) findViewById(R.id.location_now);
+        now_location.setOnTouchListener(location_touch);
+
+
+
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(5000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+//        locationRequest.setInterval(10000);
+//        locationRequest.setFastestInterval(5000);
+//        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
 
     @Override
@@ -158,4 +171,17 @@ public class MainActivity extends AppCompatActivity implements
         LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
         state = UpdatingState.STOPPED;
     }
+
+    private OnTouchListener location_touch = new OnTouchListener() {
+        @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Log.d(TAG, "location_touch");
+                        startLocationUpdate(true);
+                        break;
+                }
+            return true;
+            }
+    };
 }
